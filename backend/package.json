@@ -1,11 +1,11 @@
 {
   "name": "backend",
-  "module": "index.ts",
+  "module": "src/index.ts",
   "type": "module",
   "scripts": {
-    "start": "bun run src/index.ts",
-    "dev": "bun run src/index.ts --watch",
-    "build": "tsc",
+    "start": "bun dist/index.js",
+    "dev": "bun --watch src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun",
     "db:push": "drizzle-kit push"
   },
   "devDependencies": {
