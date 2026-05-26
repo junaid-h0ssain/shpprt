@@ -6,7 +6,8 @@
     "start": "bun dist/index.js",
     "dev": "bun --watch src/index.ts",
     "build": "bun build src/index.ts --outdir dist --target bun",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate --dialect=postgresql --schema=./src/db/schema.ts --out=./src/db/migrations"
   },
   "devDependencies": {
     "@types/bun": "latest",
