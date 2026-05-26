@@ -1,5 +1,8 @@
 
 @import "tailwindcss";
+@plugin "daisyui" {
+  themes: nord --default, business --prefersdark;
+}
 
 * {
   box-sizing: border-box;
