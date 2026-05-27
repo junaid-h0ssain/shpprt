@@ -3,13 +3,20 @@ import { Router } from "express";
 import * as queries from "../db/queries";
 import { getAuth } from "@clerk/express";
 
+const getParamValue = (value: string | string[] | undefined) =>
+  Array.isArray(value) ? value[0] : value;
+
 // Create comment (protected)
 export const createComment = async (req: Request, res: Response) => {
   try {
     const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    const { productId } = req.params;
+    const productId = getParamValue(req.params.productId);
+    if (!productId) {
+      return res.status(400).json({ error: "Product ID is required" });
+    }
+
     const { content } = req.body;
 
     if (!content)
@@ -38,7 +45,10 @@ export const deleteComment = async (req: Request, res: Response) => {
     const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    const { commentId } = req.params;
+    const commentId = getParamValue(req.params.commentId);
+    if (!commentId) {
+      return res.status(400).json({ error: "Comment ID is required" });
+    }
 
     // check if comment exists and belongs to user
     const existingComment = await queries.getCommentById(commentId);
