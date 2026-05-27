@@ -7,18 +7,29 @@ import {
   getProductById,
   updateProduct,
 } from "../api";
+import type { Product, ProductFormData } from "../types";
 
 export const useProducts = () => {
-  const result = useQuery({ queryKey: ["products"], queryFn: getAllProducts });
-  return result;
+  return useQuery<Product[]>({
+    queryKey: ["products"],
+    queryFn: getAllProducts,
+  });
 };
 
 export const useCreateProduct = () => {
-  return useMutation({ mutationFn: createProduct });
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["myProducts"] });
+    },
+  });
 };
 
-export const useProduct = (id) => {
-  return useQuery({
+export const useProduct = (id: string) => {
+  return useQuery<Product>({
     queryKey: ["product", id],
     queryFn: () => getProductById(id),
     enabled: !!id,
@@ -31,13 +42,17 @@ export const useDeleteProduct = () => {
   return useMutation({
     mutationFn: deleteProduct,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
       queryClient.invalidateQueries({ queryKey: ["myProducts"] });
     },
   });
 };
 
 export const useMyProducts = () => {
-  return useQuery({ queryKey: ["myProducts"], queryFn: getMyProducts });
+  return useQuery<Product[]>({
+    queryKey: ["myProducts"],
+    queryFn: getMyProducts,
+  });
 };
 
 export const useUpdateProduct = () => {
@@ -45,7 +60,7 @@ export const useUpdateProduct = () => {
 
   return useMutation({
     mutationFn: updateProduct,
-    onSuccess: (_, variables) => {
+    onSuccess: (_, variables: { id: string } & ProductFormData) => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       queryClient.invalidateQueries({ queryKey: ["product", variables.id] });
       queryClient.invalidateQueries({ queryKey: ["myProducts"] });

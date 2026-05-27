@@ -6,13 +6,15 @@ export const useCreateComment = () => {
 
   return useMutation({
     mutationFn: createComment,
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["product", variables.productId] });
+    onSuccess: (_, variables: { productId: string; content: string }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["product", variables.productId],
+      });
     },
   });
 };
 
-export const useDeleteComment = (productId) => {
+export const useDeleteComment = (productId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
