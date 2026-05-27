@@ -17,7 +17,7 @@ app.use(cors({
 
 app.get("/api/health", (req, res) => {
   res.json({
-    message: "Welcome to Productify API - Powered by PostgreSQL, Drizzle ORM & Clerk Auth",
+    message: "Welcome to shpprt API - Powered by PostgreSQL, Drizzle ORM & Clerk Auth",
     endpoints: {
       users: "/api/users",
       products: "/api/products",
