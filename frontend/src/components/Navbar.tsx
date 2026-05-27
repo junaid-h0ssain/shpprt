@@ -1,6 +1,11 @@
+import {
+  SignInButton,
+  SignUpButton,
+  UserButton,
+  useAuth,
+} from "@clerk/tanstack-react-start";
 import { Link } from "@tanstack/react-router";
-import { SignInButton, SignUpButton, UserButton, useAuth } from "@clerk/tanstack-react-start";
-import { ShoppingBagIcon, PlusIcon, UserIcon } from "lucide-react";
+import { PlusIcon, ShoppingBagIcon, UserIcon } from "lucide-react";
 import ThemeController from "./ThemeController";
 
 function Navbar() {
@@ -8,16 +13,18 @@ function Navbar() {
 
   return (
     <div className="navbar bg-base-300">
-      <div className="max-w-5xl mx-auto w-full px-4 flex justify-between items-center">
+      <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4">
         {/* LOGO - LEFT SIDE */}
         <div className="flex-1">
           <Link to="/" className="btn btn-ghost gap-2">
             <ShoppingBagIcon className="size-5 text-primary" />
-            <span className="text-lg font-bold font-mono uppercase tracking-wider">Shpprt</span>
+            <span className="font-mono text-lg font-bold uppercase tracking-wider">
+              Shpprt
+            </span>
           </Link>
         </div>
 
-        <div className="flex gap-2 items-center">
+        <div className="flex items-center gap-2">
           <ThemeController />
           {isSignedIn ? (
             <>
@@ -34,10 +41,14 @@ function Navbar() {
           ) : (
             <>
               <SignInButton mode="modal">
-                <button className="btn btn-ghost btn-sm">Sign In</button>
+                <button type="button" className="btn btn-ghost btn-sm">
+                  Sign In
+                </button>
               </SignInButton>
               <SignUpButton mode="modal">
-                <button className="btn btn-primary btn-sm">Get Started</button>
+                <button type="button" className="btn btn-primary btn-sm">
+                  Get Started
+                </button>
               </SignUpButton>
             </>
           )}
@@ -46,4 +57,5 @@ function Navbar() {
     </div>
   );
 }
+
 export default Navbar;

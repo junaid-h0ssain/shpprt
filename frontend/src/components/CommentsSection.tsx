@@ -1,18 +1,38 @@
-import { useState } from "react";
-import { useAuth, SignInButton } from "@clerk/tanstack-react-start";
+import { SignInButton, useAuth } from "@clerk/tanstack-react-start";
+import {
+  LogInIcon,
+  MessageSquareIcon,
+  SendIcon,
+  Trash2Icon,
+} from "lucide-react";
+import { type FormEvent, useState } from "react";
 import { useCreateComment, useDeleteComment } from "../lib/hooks/useComments";
-import { SendIcon, Trash2Icon, MessageSquareIcon, LogInIcon } from "lucide-react";
+import type { Comment } from "../lib/types";
 
-function CommentsSection({ productId, comments = [], currentUserId }) {
+interface CommentsSectionProps {
+  productId: string;
+  comments?: Comment[];
+  currentUserId?: string | null;
+}
+
+function CommentsSection({
+  productId,
+  comments = [],
+  currentUserId,
+}: CommentsSectionProps) {
   const { isSignedIn } = useAuth();
   const [content, setContent] = useState("");
   const createComment = useCreateComment();
   const deleteComment = useDeleteComment(productId);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!content.trim()) return;
-    createComment.mutate({ productId, content }, { onSuccess: () => setContent("") });
+
+    createComment.mutate(
+      { productId, content },
+      { onSuccess: () => setContent("") },
+    );
   };
 
   return (
@@ -46,10 +66,12 @@ function CommentsSection({ productId, comments = [], currentUserId }) {
           </button>
         </form>
       ) : (
-        <div className="flex items-center justify-between bg-base-200 rounded-lg p-3">
-          <span className="text-sm text-base-content/60">Sign in to join the conversation</span>
+        <div className="flex items-center justify-between rounded-lg bg-base-200 p-3">
+          <span className="text-sm text-base-content/60">
+            Sign in to join the conversation
+          </span>
           <SignInButton mode="modal">
-            <button className="btn btn-primary btn-sm gap-1">
+            <button type="button" className="btn btn-primary btn-sm gap-1">
               <LogInIcon className="size-4" />
               Sign In
             </button>
@@ -57,49 +79,59 @@ function CommentsSection({ productId, comments = [], currentUserId }) {
         </div>
       )}
 
-      <div className="space-y-2 max-h-80 overflow-y-auto">
+      <div className="max-h-80 space-y-2 overflow-y-auto">
         {comments.length === 0 ? (
-          <div className="text-center py-8 text-base-content/50">
-            <MessageSquareIcon className="size-8 mx-auto mb-2 opacity-30" />
+          <div className="py-8 text-center text-base-content/50">
+            <MessageSquareIcon className="mx-auto mb-2 size-8 opacity-30" />
             <p className="text-sm">No comments yet. Be first!</p>
           </div>
         ) : (
-          comments.map((comment) => (
-            <div key={comment.id} className="chat chat-start">
-              <div className="chat-image avatar">
-                <div className="w-8 rounded-full">
-                  <img src={comment.user?.imageUrl} alt={comment.user?.name} />
+          comments.map((comment) => {
+            const commentAuthor = comment.user;
+            const avatarSrc = commentAuthor?.imageUrl ?? "";
+            const authorName = commentAuthor?.name ?? "Unknown user";
+
+            return (
+              <div key={comment.id} className="chat chat-start">
+                <div className="chat-image avatar">
+                  <div className="w-8 rounded-full">
+                    <img src={avatarSrc} alt={authorName} />
+                  </div>
                 </div>
-              </div>
 
-              <div className="chat-header text-xs opacity-70 mb-2">
-                {comment.user?.name}
-                <time className="ml-2 text-xs opacity-50">
-                  {new Date(comment.createdAt).toLocaleDateString()}
-                </time>
-              </div>
-
-              <div className="chat-bubble chat-bubble-neutral text-sm">{comment.content}</div>
-
-              {currentUserId === comment.userId && (
-                <div className="chat-footer">
-                  <button
-                    onClick={() =>
-                      confirm("Delete?") && deleteComment.mutate({ commentId: comment.id })
-                    }
-                    className="btn btn-ghost btn-xs text-error"
-                    disabled={deleteComment.isPending}
-                  >
-                    {deleteComment.isPending ? (
-                      <span className="loading loading-spinner loading-xs" />
-                    ) : (
-                      <Trash2Icon className="size-3" />
-                    )}
-                  </button>
+                <div className="chat-header mb-2 text-xs opacity-70">
+                  {authorName}
+                  <time className="ml-2 text-xs opacity-50">
+                    {new Date(comment.createdAt).toLocaleDateString()}
+                  </time>
                 </div>
-              )}
-            </div>
-          ))
+
+                <div className="chat-bubble chat-bubble-neutral text-sm">
+                  {comment.content}
+                </div>
+
+                {currentUserId === comment.userId && (
+                  <div className="chat-footer">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        confirm("Delete?") &&
+                        deleteComment.mutate({ commentId: comment.id })
+                      }
+                      className="btn btn-ghost btn-xs text-error"
+                      disabled={deleteComment.isPending}
+                    >
+                      {deleteComment.isPending ? (
+                        <span className="loading loading-spinner loading-xs" />
+                      ) : (
+                        <Trash2Icon className="size-3" />
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })
         )}
       </div>
     </div>
