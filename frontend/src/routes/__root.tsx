@@ -12,6 +12,7 @@ import appCss from "../styles.css?url";
 
 import { QueryClient } from "@tanstack/react-query";
 import { ClerkProvider } from "@clerk/tanstack-react-start";
+import Navbar from "#/components/Navbar";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -55,6 +56,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+          <Navbar />
           {children}
         </ClerkProvider>
         <TanStackDevtools
