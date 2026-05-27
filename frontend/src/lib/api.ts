@@ -1,16 +1,16 @@
 import axios from "axios";
+import type { ProductFormData, SyncUserPayload } from "./types";
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true, // send cookies with req
+  withCredentials: true,
 });
 
-export const syncUser = async (userData) => {
+export const syncUser = async (userData: SyncUserPayload) => {
   const { data } = await api.post("/users/sync", userData);
   return data;
 };
 
-// Products API
 export const getAllProducts = async () => {
   const { data } = await api.get("/products");
   return data;
@@ -26,12 +26,15 @@ export const getMyProducts = async () => {
   return data;
 };
 
-export const createProduct = async (productData) => {
+export const createProduct = async (productData: ProductFormData) => {
   const { data } = await api.post("/products", productData);
   return data;
 };
 
-export const updateProduct = async ({ id, ...productData }) => {
+export const updateProduct = async ({
+  id,
+  ...productData
+}: { id: string } & ProductFormData) => {
   const { data } = await api.put(`/products/${id}`, productData);
   return data;
 };
@@ -41,13 +44,18 @@ export const deleteProduct = async (id: string) => {
   return data;
 };
 
-// Comments API
-export const createComment = async ({ productId, content }) => {
+export const createComment = async ({
+  productId,
+  content,
+}: {
+  productId: string;
+  content: string;
+}) => {
   const { data } = await api.post(`/comments/${productId}`, { content });
   return data;
 };
 
-export const deleteComment = async ({ commentId }) => {
+export const deleteComment = async ({ commentId }: { commentId: string }) => {
   const { data } = await api.delete(`/comments/${commentId}`);
   return data;
 };
