@@ -10,7 +10,7 @@ import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 
 import appCss from "../styles.css?url";
 
-import type { QueryClient } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import { ClerkProvider } from "@clerk/tanstack-react-start";
 
 interface MyRouterContext {
