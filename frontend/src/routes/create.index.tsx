@@ -1,6 +1,9 @@
-import { createFileRoute, Link, Navigate, useNavigate } from "@tanstack/react-router";
-import { useCreateProduct } from "../lib/hooks/useProducts";
-import { useState } from "react";
+import {
+  createFileRoute,
+  Link,
+  Navigate,
+  useNavigate,
+} from "@tanstack/react-router";
 import {
   ArrowLeftIcon,
   FileTextIcon,
@@ -8,7 +11,11 @@ import {
   SparklesIcon,
   TypeIcon,
 } from "lucide-react";
+import { useState, type FormEvent } from "react";
+import LoadingSpinner from "#/components/LoadingSpinner";
 import useAuthReq from "#/lib/hooks/useAuthReq";
+import useUserSync from "#/lib/hooks/useUserSync";
+import { useCreateProduct } from "#/lib/hooks/useProducts";
 
 export const Route = createFileRoute("/create/")({
   component: RouteComponent,
@@ -16,12 +23,6 @@ export const Route = createFileRoute("/create/")({
 
 function RouteComponent() {
   const { isClerkLoaded, isSignedIn } = useAuthReq();
-  useUserSync();
-
-  if (!isClerkLoaded) return <div>Auth not loaded</div>;
-  if (!isSignedIn) {
-    return (<Navigate to="/" />);
-  }
   const navigate = useNavigate();
   const createProduct = useCreateProduct();
   const [formData, setFormData] = useState({
@@ -30,14 +31,25 @@ function RouteComponent() {
     imageUrl: "",
   });
 
-  const handleSubmit = (e: Event) => {
+  useUserSync();
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     createProduct.mutate(formData, {
-      onSuccess: () => navigate("/"),
+      onSuccess: () => navigate({ to: "/" }),
     });
   };
+
+  if (!isClerkLoaded) {
+    return <LoadingSpinner />;
+  }
+
+  if (!isSignedIn) {
+    return <Navigate to="/" />;
+  }
+
   return (
-    <div className="max-w-lg mx-auto">
+    <div className="mx-auto max-w-lg">
       <Link to="/" className="btn btn-ghost btn-sm gap-1 mb-4">
         <ArrowLeftIcon className="size-4" /> Back
       </Link>
@@ -49,8 +61,7 @@ function RouteComponent() {
             New Product
           </h1>
 
-          <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-            {/* TITLE INPUT */}
+          <form onSubmit={handleSubmit} className="mt-4 space-y-4">
             <label className="input input-bordered flex items-center gap-2 bg-base-200">
               <TypeIcon className="size-4 text-base-content/50" />
               <input
@@ -65,7 +76,6 @@ function RouteComponent() {
               />
             </label>
 
-            {/* IMGURL INPUT */}
             <label className="input input-bordered flex items-center gap-2 bg-base-200">
               <ImageIcon className="size-4 text-base-content/50" />
               <input
@@ -80,24 +90,25 @@ function RouteComponent() {
               />
             </label>
 
-            {/* IMG PREVIEW */}
             {formData.imageUrl && (
               <div className="rounded-box overflow-hidden">
                 <img
                   src={formData.imageUrl}
                   alt="Preview"
-                  className="w-full h-40 object-cover"
-                  onError={(e) => (e.target.style.display = "none")}
+                  className="h-40 w-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
                 />
               </div>
             )}
 
             <div className="form-control">
-              <div className="flex items-start gap-2 p-3 rounded-box bg-base-200 border border-base-300">
-                <FileTextIcon className="size-4 text-base-content/50 mt-1" />
+              <div className="flex items-start gap-2 rounded-box border border-base-300 bg-base-200 p-3">
+                <FileTextIcon className="mt-1 size-4 text-base-content/50" />
                 <textarea
                   placeholder="Description"
-                  className="grow bg-transparent resize-none focus:outline-none min-h-24"
+                  className="min-h-24 grow resize-none bg-transparent focus:outline-none"
                   value={formData.description}
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
