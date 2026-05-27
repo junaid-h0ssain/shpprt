@@ -17,7 +17,8 @@ app.use(cors({
 
 app.get("/api/health", (req, res) => {
   res.json({
-    message: "Welcome to shpprt API - Powered by PostgreSQL, Drizzle ORM & Clerk Auth",
+    message:
+      "Welcome to shpprt API - Powered by PostgreSQL, Drizzle ORM & Clerk Auth",
     endpoints: {
       users: "/api/users",
       products: "/api/products",
@@ -31,5 +32,7 @@ app.use("/api/products", productRouter);
 app.use("/api/comments", commentRouter);
 
 app.listen(ENV.PORT, () => {
-  console.log("Welcome to the shpprt backend\nServer is running on port " + ENV.PORT);
+  console.log(
+    "Welcome to the shpprt backend\nServer is running on port " + ENV.PORT,
+  );
 });

@@ -25,7 +25,7 @@ function CommentsSection({
   const createComment = useCreateComment();
   const deleteComment = useDeleteComment(productId);
 
-  const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!content.trim()) return;
 
