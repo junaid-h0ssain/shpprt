@@ -134,24 +134,24 @@ export const deleteProduct = async (req: Request, res: Response) => {
   }
 };
 
-const router = Router();
+const productRouter = Router();
 
 // GET /api/products => Get all products (public)
-router.get("/", getAllProducts);
+productRouter.get("/", getAllProducts);
 
 // GET /api/products/my - Get current user's products (protected)
-router.get("/my", getMyProducts);
+productRouter.get("/my", getMyProducts);
 
 // GET /api/products/:id - Get single product by ID (public)
-router.get("/:id", getProductById);
+productRouter.get("/:id", getProductById);
 
 // POST /api/products - Create new product (protected)
-router.post("/", createProduct);
+productRouter.post("/", createProduct);
 
 // PUT /api/products/:id - Update product (protected - owner only)
-router.put("/:id", updateProduct);
+productRouter.put("/:id", updateProduct);
 
 // DELETE /api/products/:id - Delete product (protected - owner only)
-router.delete("/:id", deleteProduct);
+productRouter.delete("/:id", deleteProduct);
 
-export default router;
+export default productRouter;

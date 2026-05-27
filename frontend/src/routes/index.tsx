@@ -1,12 +1,18 @@
-import Navbar from '#/components/Navbar'
-import { createFileRoute } from '@tanstack/react-router'
+import Navbar from "#/components/Navbar";
+import useAuthReq from "#/lib/hooks/useAuthReq";
+import useUserSync from "#/lib/hooks/useUserSync";
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/')({ component: Home })
+export const Route = createFileRoute("/")({ component: Home });
 
 function Home() {
+  const { isClerkLoaded, isSignedIn } = useAuthReq();
+  useUserSync();
+
+  if (!isClerkLoaded) return null;
   return (
-    <div className=''>
+    <div className="">
       <Navbar />
     </div>
-  )
+  );
 }

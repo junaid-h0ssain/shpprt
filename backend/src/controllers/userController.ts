@@ -4,7 +4,7 @@ import * as queries from "../db/queries";
 
 import { getAuth } from "@clerk/express";
 
-const router = Router();
+const userRouter = Router();
 
 export async function syncUser(req: Request, res: Response) {
   try {
@@ -31,6 +31,6 @@ export async function syncUser(req: Request, res: Response) {
   }
 }
 
-router.post("/sync", syncUser);
+userRouter.post("/sync", syncUser);
 
-export default router;
+export default userRouter;

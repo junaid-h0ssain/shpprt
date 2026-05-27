@@ -59,12 +59,12 @@ export const deleteComment = async (req: Request, res: Response) => {
   }
 };
 
-const router = Router();
+const commentRouter = Router();
 
 // POST /api/comments/:productId - Add comment to product (protected)
-router.post("/:productId", createComment);
+commentRouter.post("/:productId", createComment);
 
 // DELETE /api/comments/:commentId - Delete comment (protected - owner only)
-router.delete("/:commentId", deleteComment);
+commentRouter.delete("/:commentId", deleteComment);
 
-export default router;
+export default commentRouter;
