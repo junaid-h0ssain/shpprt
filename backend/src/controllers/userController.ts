@@ -14,15 +14,22 @@ export async function syncUser(req: Request, res: Response) {
     const { email, name, imageUrl } = req.body;
 
     if (!email || !name || !imageUrl) {
-      return res.status(400).json({ error: "Email, name, and imageUrl are required" });
+      return res.status(400).json({ error: "Email is required" });
     }
 
-    const user = await queries.createUser({
-      id: userId,
+    const userData = {
       email,
-      name,
-      imageUrl,
-    });
+      ...(name !== undefined ? { name } : {}),
+      ...(imageUrl !== undefined ? { imageUrl } : {}),
+    };
+
+    const existingUser = await queries.getUserById(userId);
+    const user = existingUser
+      ? await queries.updateUser(userId, userData)
+      : await queries.createUser({
+          id: userId,
+          ...userData,
+        });
 
     res.status(200).json(user);
   } catch (error) {
